@@ -1,0 +1,14 @@
+# dsh-render-document bundle patch.
+#
+# Declares the plugin's single loader entry. The `insert:` rows live in the
+# package's own patch file, so installing the package auto-mounts the entry —
+# no manual `- insert:` in the profile's cordis.patch.yml.
+#
+# The `name` (a bare package specifier) resolves to this package's
+# `main`/`exports["."]` (lib/index.js).
+#
+# Install: dsh plugin --profile <name> add dsh-render-document
+# Restart `dsh --profile <name>` after installing.
+- insert:
+    - id: dsh-render-document
+      name: dsh-render-document

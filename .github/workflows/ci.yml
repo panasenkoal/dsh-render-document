@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    # The Word engine and the bundled LibreOffice engine are Windows-only; the
+    # unit tests and contract tests are platform independent but run here so the
+    # job matches the primary target.
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node: ['22.19.0', '24.x']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Unit and contract tests
+        # `node --test` spawns test files with piped stdio; that works here, but
+        # run the files directly too so a failure is easy to reproduce locally.
+        run: |
+          node test/paths.test.mjs
+          node test/tool-contract.test.mjs
+      - name: Engine discovery must not crash without a DSH installation
+        run: node scripts/probe.mjs
